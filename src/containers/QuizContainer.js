@@ -10,7 +10,8 @@ const QuizContainer = () => {
   const [loading, setLoading] = useState(false);
   const [numberOfQuestionsAsked, setNumberOfQuestionsAsked] = useState(0);
   const currentQuestion = questions[0];
-  const selectedAnswer = selectedAnswers[currentQuestion.id];
+  const selectedAnswer = currentQuestion ? selectedAnswers[currentQuestion.id] : undefined;
+
 
   const auth = getAuth();
 
@@ -61,6 +62,7 @@ const QuizContainer = () => {
             question.correctAnswer
           ),
         }));
+        console.log("Questions:", questions);
         setQuestions(questions);
         setLoading(false);
       })
@@ -73,9 +75,10 @@ const QuizContainer = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
-    const currentQuestion = questions[0];
-    const selectedAnswer = selectedAnswers[currentQuestion.id];
+
+    if (questions.length === 0) {
+      return;
+    }
   
     // Check if the current question has already been answered
     const answersRef = database.ref("answers");
