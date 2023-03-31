@@ -1,16 +1,30 @@
 import { useState, useEffect } from "react";
 import QuestionList from "../components/QuestionList";
+import { database } from "./firebase";
+import { getAuth, signInWithPopup } from "firebase/auth";
 
 const QuizContainer = () => {
   const [questions, setQuestions] = useState([]);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [numberOfQuestionsAsked, setNumberOfQuestionsAsked] = useState(0)
+  const [numberOfQuestionsAsked, setNumberOfQuestionsAsked] = useState(0);
+  const currentQuestion = questions[0];
+  const selectedAnswer = selectedAnswers[currentQuestion.id];
+
+  const auth = getAuth();
 
   useEffect(() => {
     getQuestions();
   }, []);
+
+  useEffect(() => {
+    // Reset the Firebase database and the count of questions asked
+    if (numberOfQuestionsAsked >= 600) {
+      database.ref("answers").remove();
+      setNumberOfQuestionsAsked(0);
+    }
+  }, [numberOfQuestionsAsked]);
 
   const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -34,7 +48,6 @@ const QuizContainer = () => {
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log(data); // log the response to the console
         const questions = data.map((question) => ({
           id: question.id,
           question: question.question,
@@ -48,7 +61,6 @@ const QuizContainer = () => {
             question.correctAnswer
           ),
         }));
-        console.log(questions); // log the questions array to the console
         setQuestions(questions);
         setLoading(false);
       })
@@ -59,16 +71,48 @@ const QuizContainer = () => {
     setSelectedAnswers({ ...selectedAnswers, [questionId]: answer });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+  
     const currentQuestion = questions[0];
     const selectedAnswer = selectedAnswers[currentQuestion.id];
+  
+    // Check if the current question has already been answered
+    const answersRef = database.ref("answers");
+    answersRef.once("value", (snapshot) => {
+      const answeredQuestionIds = Object.values(snapshot.val() || {}).map(
+        (answer) => answer.questionId
+      );
+      if (answeredQuestionIds.includes(currentQuestion.id)) {
+        setSelectedAnswers({});
+        getQuestions();
+        return;
+      }
+    });
+  
+    // Update score and number of questions asked if the selected answer is correct
     if (selectedAnswer === currentQuestion.correctAnswer) {
       setScore(score + 1);
-      setNumberOfQuestionsAsked(numberOfQuestionsAsked + 1)
+      setNumberOfQuestionsAsked(numberOfQuestionsAsked + 1);
+    } else {
+      setNumberOfQuestionsAsked(numberOfQuestionsAsked + 1);
     }
+  
+    // Clear the selected answers and get new questions
     setSelectedAnswers({});
     getQuestions();
+  
+    // Push the question ID and selected answer to the "answers" node in the database
+    database.ref("answers").push({
+      questionId: currentQuestion.id,
+      selectedAnswer: selectedAnswer,
+    });
+  
+    // Reset Firebase database and count of questions asked if threshold is reached. Threshold is set for 600 unique questions
+    if (numberOfQuestionsAsked >= 600) {
+      await database.ref("answers").remove();
+      setNumberOfQuestionsAsked(0);
+    }
   };
 
   return (
