@@ -24,4 +24,17 @@ const signInWithGoogle = () => {
   return auth.signInWithPopup(provider);
 }
 
-export { database, auth, signInWithGoogle };
+const signInWithEmailAndPassword = (email, password) => {
+  return auth.signInWithEmailAndPassword(email, password);
+}
+
+const createUserWithEmailAndPassword = (email, password) => {
+  return auth.createUserWithEmailAndPassword(email, password);
+}
+
+const signOut = () => {
+  return auth.signOut();
+}
+
+export { database, auth, signInWithGoogle, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut };
+
