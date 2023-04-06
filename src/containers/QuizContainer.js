@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import QuestionList from "../components/QuestionList";
 import { database } from "./firebase";
 import { getAuth, signInWithPopup } from "firebase/auth";
+import backgroundImg from "../img/PurpleHex.jpg"
+import './QuizContainer.css';
+
 
 const QuizContainer = () => {
   const [questions, setQuestions] = useState([]);
@@ -119,6 +122,8 @@ const QuizContainer = () => {
   };
 
   return (
+    <div className="quiz-container-parent">
+    <div className="quiz-container-bg"></div>
     <div className="questionContainer">
       {loading ? (
         <p>Loading...</p>
@@ -133,6 +138,7 @@ const QuizContainer = () => {
         </form>
       )}
       <p>Score: {score} / {numberOfQuestionsAsked} </p>
+    </div>
     </div>
   );
 };

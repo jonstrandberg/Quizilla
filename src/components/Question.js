@@ -1,4 +1,4 @@
-
+import './Question.css';
 
 const Question = ({ question, answers, selectedAnswer, onAnswerSelect }) => {
   return (
@@ -6,7 +6,7 @@ const Question = ({ question, answers, selectedAnswer, onAnswerSelect }) => {
       <h3>{question}</h3>
       <ul>
         {answers.map((answer, index) => (
-          <li key={index}>
+          <li className="answerOptions" key={index}>
             <label>
               <input
                 type="radio"

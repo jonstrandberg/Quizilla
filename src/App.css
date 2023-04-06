@@ -121,3 +121,27 @@ button.register-btn {
   display: block;
   margin: -1em;
 }
+
+.sign-out-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: #5a009e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.sign-out-btn:hover {
+  background-color: #8000ff;
+}
+
+.displayName {
+  color: white;
+}
+
+
+
