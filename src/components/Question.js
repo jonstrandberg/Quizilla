@@ -2,20 +2,17 @@ import './Question.css';
 
 const Question = ({ question, answers, selectedAnswer, onAnswerSelect }) => {
   return (
-    <div className="question">
-      <h3>{question}</h3>
+    <div className="question_container">
+      <p className="question">{question}</p>
       <ul>
         {answers.map((answer, index) => (
-          <li className="answerOptions" key={index}>
-            <label>
-              <input
-                type="radio"
-                value={answer}
-                checked={selectedAnswer === answer}
-                onChange={() => onAnswerSelect(answer)}
-              />
-              {answer}
-            </label>
+          <li 
+            className={selectedAnswer === answer ? 'answerOptions selected' : 'answerOptions'}
+            key={index}
+            onClick={() => onAnswerSelect(answer)}
+          >
+            <div className={`radio-button ${selectedAnswer === answer ? 'selected' : ''}`} />
+            <label>{answer}</label>
           </li>
         ))}
       </ul>

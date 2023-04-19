@@ -1,15 +1,4 @@
-/* .quiz-container-bg {
-    background-image: url('../img/PurpleHex.jpg');
-    background-size: cover;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-  } */
-
-  .quiz-container-bg {
+.quiz-container-bg {
     background: radial-gradient(circle, #270A5E, #AC00D8);
     position: fixed;
     top: 0;
@@ -17,4 +6,37 @@
     width: 100%;
     height: 100%;
     z-index: -1;
-  }
+}
+
+.questionContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: fixed;
+    top: 12%;
+    right: 10%;
+    height: 30%;
+    width: 15%;
+    padding: 1em;
+    box-sizing: border-box;
+    background: linear-gradient(to bottom right, #ff6e7f, #bfe9ff);
+    color: black;
+    font-weight: bold;
+    border-radius: 50%;
+    text-align: center;
+}
+
+
+.score {
+    width: 14em; 
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.6em;
+}

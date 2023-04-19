@@ -14,6 +14,7 @@ const QuizContainer = () => {
   const [numberOfQuestionsAsked, setNumberOfQuestionsAsked] = useState(0);
   const currentQuestion = questions[0];
   const selectedAnswer = currentQuestion ? selectedAnswers[currentQuestion.id] : undefined;
+  const [askedQuestionsIds, setAskedQuestionsIds] = useState([]);
 
 
   const auth = getAuth();
@@ -47,31 +48,43 @@ const QuizContainer = () => {
   const getQuestions = () => {
     setLoading(true);
     fetch(
-      "https://the-trivia-api.com/api/questions?categories=general_knowledge&limit=1&region=GB&difficulty=medium&" +
+      "https://the-trivia-api.com/api/questions?categories=general_knowledge,geography,history,food_and_drink,science,society_and_culture,sport_and_leisure,music,film_and_tv,arts_and_literature&limit=1&region=GB&difficulty=medium&" +
         Math.random()
+        // "https://the-trivia-api.com/api/questions?categories=general_knowledge&limit=1&region=GB&difficulty=medium&"
     )
       .then((res) => res.json())
       .then((data) => {
-        const questions = data.map((question) => ({
-          id: question.id,
-          question: question.question,
-          correctAnswer: question.correctAnswer,
-          incorrectAnswers: question.incorrectAnswers,
-          category: question.category,
-          type: question.type,
-          difficulty: question.difficulty,
+        const newQuestion = {
+          id: data[0].id,
+          question: data[0].question,
+          correctAnswer: data[0].correctAnswer,
+          incorrectAnswers: data[0].incorrectAnswers,
+          category: data[0].category,
+          type: data[0].type,
+          difficulty: data[0].difficulty,
           allAnswers: combineAllAnswers(
-            question.incorrectAnswers,
-            question.correctAnswer
+            data[0].incorrectAnswers,
+            data[0].correctAnswer
           ),
-        }));
-        console.log("Questions:", questions);
-        setQuestions(questions);
-        setLoading(false);
+        };
+  
+        const answeredQuestionIds = Object.values(selectedAnswers).map(
+          (answer) => answer.questionId
+        );
+  
+        if (answeredQuestionIds.includes(newQuestion.id) || askedQuestionsIds.includes(newQuestion.id)) {
+          // If the new question has already been answered or asked, get another question
+          getQuestions();
+        } else {
+          // Otherwise, set the new question and update the askedQuestionsIds state
+          setQuestions([newQuestion]);
+          setLoading(false);
+          setAskedQuestionsIds([...askedQuestionsIds, newQuestion.id]);
+        }
       })
       .catch((error) => console.error(error));
   };
-
+  
   const handleAnswerSelect = (questionId, answer) => {
     setSelectedAnswers({ ...selectedAnswers, [questionId]: answer });
   };
@@ -134,10 +147,12 @@ const QuizContainer = () => {
             selectedAnswers={selectedAnswers}
             onAnswerSelect={handleAnswerSelect}
           />
-          <button type="submit">Submit Answers</button>
+          <button type="submit">Submit Answer</button>
         </form>
       )}
-      <p>Score: {score} / {numberOfQuestionsAsked} </p>
+    </div>
+    <div className="score-container">
+    <p className="score">Score: {score} / {numberOfQuestionsAsked} </p>
     </div>
     </div>
   );

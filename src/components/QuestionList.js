@@ -1,5 +1,6 @@
 import React from "react";
 import Question from "./Question";
+import './QuestionList.css';
 
 const QuestionList = ({ questions, selectedAnswers, onAnswerSelect }) => {
   return (

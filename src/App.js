@@ -111,7 +111,7 @@ const App = () => {
     <>
       {user ? (
         <>
-          <h1 className='displayName'>Welcome, {user.displayName}</h1>
+          {/* <h1 className='displayName'>Welcome, {user.displayName}</h1> */}
           <button className="sign-out-btn" onClick={signOut}>
           Sign out
           </button>
