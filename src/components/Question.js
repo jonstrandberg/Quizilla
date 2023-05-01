@@ -12,7 +12,7 @@ const Question = ({ question, answers, selectedAnswer, onAnswerSelect }) => {
             onClick={() => onAnswerSelect(answer)}
           >
             <div className={`radio-button ${selectedAnswer === answer ? 'selected' : ''}`} />
-            <label>{answer}</label>
+            <label>{answer.charAt(0).toUpperCase() + answer.slice(1)}</label>
           </li>
         ))}
       </ul>
